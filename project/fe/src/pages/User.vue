@@ -10,6 +10,7 @@
           <div class="text-xl font-bold text-white mb-1">{{ user.nickname || '未登录' }}</div>
           <div class="text-gray-400 text-sm">ID: {{ user.id || '--' }}</div>
         </div>
+        <!-- 点击进入编辑资料页面 -->
         <div class="text-gray-400">›</div>
       </div>
 

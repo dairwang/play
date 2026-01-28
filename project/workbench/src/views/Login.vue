@@ -54,7 +54,7 @@ const handleLogin = async () => {
           <el-icon class="text-primary text-3xl"><User /></el-icon>
         </div>
         <h2 class="text-2xl font-bold text-white">管理后台登录</h2>
-        <p class="text-gray-400 text-sm mt-2">Play Companion Admin System</p>
+        <!-- <p class="text-gray-400 text-sm mt-2">Play Companion Admin System</p> -->
       </div>
 
       <!-- Login Form -->
@@ -93,7 +93,6 @@ const handleLogin = async () => {
       
       <!-- Footer -->
       <div class="mt-6 text-center text-gray-500 text-xs">
-        &copy; 2023 Play Companion Inc.
       </div>
     </div>
   </div>

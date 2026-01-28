@@ -25,7 +25,7 @@ const routes = [
       { path: 'games', component: () => import('../views/GameList.vue'), meta: { title: '游戏管理' } },
       { path: 'audit', component: () => import('../views/AuditList.vue'), meta: { title: '陪玩审核' } },
       { path: 'orders', component: () => import('../views/OrderList.vue'), meta: { title: '订单管理' } },
-      { path: 'finance', component: () => import('../views/Dashboard.vue'), meta: { title: '资金结算' } },
+      { path: 'finance', component: () => import('../views/Finance.vue'), meta: { title: '资金结算' } },
     ]
   }
 ]

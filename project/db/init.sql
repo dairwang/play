@@ -65,6 +65,20 @@ CREATE TABLE IF NOT EXISTS `wallet_logs` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- 6. Refund Requests
+CREATE TABLE IF NOT EXISTS `refund_requests` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `order_id` INT NOT NULL COMMENT '关联订单',
+  `applicant_id` INT NOT NULL COMMENT '申请人（下单用户）',
+  `amount` DECIMAL(10,2) NOT NULL COMMENT '退款金额',
+  `reason` TEXT NULL COMMENT '退款原因',
+  `status` VARCHAR(20) DEFAULT 'pending' COMMENT 'pending, approved, rejected',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `processed_at` TIMESTAMP NULL,
+  FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`),
+  FOREIGN KEY (`applicant_id`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Initial Data
 
 -- Admin Account (Password: 123456)

@@ -49,6 +49,7 @@
           <template v-if="currentTab === 'client'">
             <button v-if="item.status === 'pending'" @click="cancelOrder(item)" class="btn-outline text-xs px-3 py-1">取消订单</button>
             <button v-if="item.status === 'accepted'" @click="completeOrder(item)" class="btn-primary text-xs px-3 py-1">完成订单</button>
+            <button v-if="item.status === 'completed'" @click="applyRefund(item)" class="btn-outline text-xs px-3 py-1">申请退款</button>
           </template>
 
           <!-- Companion Actions -->
@@ -139,6 +140,23 @@ const completeOrder = async (item) => {
     Toast.success('订单完成，支付成功')
     fetchList()
   } catch (e) { 
+    if (e !== false) Toast.error(e.msg || '操作失败')
+  }
+}
+
+const applyRefund = async (item) => {
+  try {
+    await Confirm('确定对该订单发起退款申请吗？')
+    await request({
+      url: '/refunds/apply',
+      method: 'POST',
+      data: {
+        order_id: item.id,
+        reason: '用户发起退款申请'
+      }
+    })
+    Toast.success('退款申请已提交')
+  } catch (e) {
     if (e !== false) Toast.error(e.msg || '操作失败')
   }
 }

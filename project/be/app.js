@@ -17,12 +17,14 @@ const authRoutes = require('./routes/auth');
 const gameRoutes = require('./routes/game');
 const companionRoutes = require('./routes/companion');
 const orderRoutes = require('./routes/order');
+const refundRoutes = require('./routes/refund');
 const userRoutes = require('./routes/user');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/companions', companionRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/refunds', refundRoutes);
 app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
