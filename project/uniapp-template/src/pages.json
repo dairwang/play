@@ -1,0 +1,79 @@
+{
+	"pages": [
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationStyle": "custom",
+				"backgroundColor": "#0F3460"
+			}
+		},
+		{
+			"path": "pages/my/my",
+			"style": {
+				"navigationStyle": "custom",
+				"backgroundColor": "#0F3460"
+			}
+		},
+		{
+			"path": "pages/paging/paging",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mescroll/mescroll",
+			"style": {
+				"navigationBarTitleText": "mescroll",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/demo/tabbar",
+			"style": {
+				"navigationStyle": "custom"
+			}
+
+		}
+	],
+	"tabBar": {
+		"color": "#9A9C9F",
+		"selectedColor": "#FF2D55",
+		"borderStyle": "black",
+		"backgroundColor": "#000000",
+		"height": "100rpx",
+		"fontSize": "20rpx",
+		"list": [
+			{
+				"pagePath": "pages/home/home",
+				"iconPath": "static/tabbar/family/homework.png",
+				"selectedIconPath": "static/tabbar/family/homework_selected.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/my/my",
+				"iconPath": "static/tabbar/family/my.png",
+				"selectedIconPath": "static/tabbar/family/my_selected.png",
+				"text": "我的"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "电竞陪玩",
+		"navigationBarBackgroundColor": "#0F3460",
+		"backgroundColor": "#0F3460"
+	},
+	"easycom": {
+		// 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+		"custom": {
+			"^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+		}
+	}
+}
