@@ -7,6 +7,7 @@ router.use(authMiddleware);
 
 router.get('/stats', userController.getDashboardStats);
 router.get('/all', userController.getAllUsers);
-// router.put('/:id/status', userController.updateUserStatus);
+router.put('/update/:id', userController.updateUser);
+router.delete('/delete/:id', userController.deleteUser);
 
 module.exports = router;

@@ -104,6 +104,7 @@ async function submitOrder() {
             {{ detail.Game?.name }}
           </text>
         </view>
+        <!-- 陪玩签名 -->
         <view class="text-gray-400">
           擅长：开黑交流、战术沟通、温柔陪伴
         </view>
@@ -154,7 +155,7 @@ async function submitOrder() {
               价格
             </text>
             <text class="text-primary font-bold">
-              ¥{{ detail.price }}/局
+              ¥{{ detail.price }}/小时
             </text>
           </view>
 
