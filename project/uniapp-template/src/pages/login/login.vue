@@ -86,25 +86,29 @@ async function handleLogin() {
 
       <view class="mb-4">
         <view class="input">
-          <text class="mr-3 text-gray-400">👤</text>
+          <text class="mr-3 text-gray-400">
+            👤
+          </text>
           <input
             v-model="form.username"
             type="text"
             placeholder="用户名"
             class="input-field"
-          />
+          >
         </view>
       </view>
 
       <view class="mb-6">
         <view class="input">
-          <text class="mr-3 text-gray-400">🔒</text>
+          <text class="mr-3 text-gray-400">
+            🔒
+          </text>
           <input
             v-model="form.password"
             type="password"
             placeholder="密码"
             class="input-field"
-          />
+          >
         </view>
       </view>
 
@@ -117,7 +121,9 @@ async function handleLogin() {
       </button>
 
       <view class="mt-6 flex items-center justify-center text-sm">
-        <text class="text-gray-500">还没有账号？</text>
+        <text class="text-gray-500">
+          还没有账号？
+        </text>
         <text
           class="text-primary ml-2 font-bold"
           @click="goRegister"
@@ -131,4 +137,3 @@ async function handleLogin() {
 
 <style lang="scss">
 </style>
-

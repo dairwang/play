@@ -21,7 +21,7 @@ function onConfirm() {
       confirm-type="search"
       @input="onInput"
       @confirm="onConfirm"
-    />
+    >
   </view>
 </template>
 

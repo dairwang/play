@@ -37,7 +37,8 @@ export async function request<T = any>(options: RequestOptions): Promise<T> {
 
         if (code === 200) {
           resolve(json as T)
-        } else {
+        }
+        else {
           const msg = json.msg || '请求失败'
           console.error(msg, json)
           uni.showToast({

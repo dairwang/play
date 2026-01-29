@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { request } from '@/utils/request'
 import SearchBar from '@/components/SearchBar.vue'
 import SmartImage from '@/components/SmartImage.vue'
-import { DEFAULT_AVATAR, DEFAULT_GAME_ICON, DEFAULT_BANNER, GAME_ICON_MAP } from '@/common/images'
+import { DEFAULT_AVATAR, DEFAULT_BANNER, DEFAULT_GAME_ICON, GAME_ICON_MAP } from '@/common/images'
 
 const banners = ref<string[]>([
   'https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?q=80&w=1200&auto=format&fit=crop',
@@ -97,9 +97,9 @@ function selectGame(game: any) {
           <view class="h-10 w-10 rounded-xl bg-gradient-to-tr from-primary to-pink-500 grid place-items-center animate-[pulse-glow_3s_ease_infinite]">
             🎮
           </view>
-          <view class="hero-title">
+          <!-- <view class="hero-title">
             电竞陪玩
-          </view>
+          </view> -->
         </view>
         <view class="hidden md:flex items-center gap-3">
           <button class="btn-secondary-sm">
@@ -129,8 +129,12 @@ function selectGame(game: any) {
 
     <view class="mt-6">
       <view class="px-4 mb-3 flex justify-between items-end">
-        <text class="section-title">热门游戏</text>
-        <text class="chip-info flex items-center">查看全部</text>
+        <text class="section-title">
+          热门游戏
+        </text>
+        <text class="chip-info flex items-center">
+          查看全部
+        </text>
       </view>
 
       <view v-if="loadingGames" class="px-4">
@@ -148,7 +152,9 @@ function selectGame(game: any) {
 
       <view v-else-if="errorGames" class="px-4">
         <view class="card p-6 text-center">
-          <text class="text-gray-500 mb-3">加载失败</text>
+          <text class="text-gray-500 mb-3">
+            加载失败
+          </text>
           <button class="btn-secondary-sm" @click="fetchGames">
             重试
           </button>
@@ -189,7 +195,9 @@ function selectGame(game: any) {
 
     <view class="mt-8 px-4">
       <view class="mb-4">
-        <text class="section-title">推荐陪玩</text>
+        <text class="section-title">
+          推荐陪玩
+        </text>
       </view>
 
       <view v-if="loadingCompanions" class="grid grid-cols-2 gap-4 px-0 animate-pulse">
@@ -208,7 +216,9 @@ function selectGame(game: any) {
 
       <view v-else-if="errorCompanions" class="px-4">
         <view class="card p-6 text-center">
-          <text class="text-gray-500 mb-3">加载失败</text>
+          <text class="text-gray-500 mb-3">
+            加载失败
+          </text>
           <button class="btn-secondary-sm" @click="fetchCompanions">
             重试
           </button>
@@ -217,7 +227,9 @@ function selectGame(game: any) {
 
       <view v-else-if="companions.length === 0" class="px-4">
         <view class="card p-6 text-center">
-          <text class="text-gray-500">暂无推荐内容</text>
+          <text class="text-gray-500">
+            暂无推荐内容
+          </text>
         </view>
       </view>
 

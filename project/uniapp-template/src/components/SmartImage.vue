@@ -5,10 +5,9 @@ const props = defineProps<{
   cls?: string
 }>()
 
-const onError = (e: any) => {
-  if (props.fallback && e?.target) {
+function onError(e: any) {
+  if (props.fallback && e?.target)
     e.target.src = props.fallback
-  }
 }
 </script>
 

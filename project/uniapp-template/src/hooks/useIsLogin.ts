@@ -3,6 +3,6 @@ export function useIsLogin() {
     return true
   }
   return {
-    isLogin
+    isLogin,
   }
 }
