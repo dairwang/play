@@ -19,20 +19,34 @@
         "navigationStyle": "custom",
         "backgroundColor": "#0F3460"
       }
-		},
-		{
-			"path": "pages/companion/detail",
-			"style": {
-				"navigationStyle": "custom",
-				"backgroundColor": "#0F3460"
-			}
-		},
-		{
-			"path": "pages/order/list",
-			"style": {
-				"navigationStyle": "custom",
-				"backgroundColor": "#0F3460"
-			}
+    },
+    {
+      "path": "pages/register/register",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#0F3460"
+      }
+    },
+    {
+      "path": "pages/apply/apply",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#0F3460"
+      }
+    },
+    {
+      "path": "pages/companion/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#0F3460"
+      }
+    },
+    {
+      "path": "pages/order/list",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#0F3460"
+      }
     },
     {
       "path": "pages/paging/paging",
@@ -84,7 +98,6 @@
     "backgroundColor": "#0F3460"
   },
   "easycom": {
-    // 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
     "custom": {
       "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
       "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
