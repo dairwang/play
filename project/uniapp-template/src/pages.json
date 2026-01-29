@@ -19,6 +19,20 @@
         "navigationStyle": "custom",
         "backgroundColor": "#0F3460"
       }
+		},
+		{
+			"path": "pages/companion/detail",
+			"style": {
+				"navigationStyle": "custom",
+				"backgroundColor": "#0F3460"
+			}
+		},
+		{
+			"path": "pages/order/list",
+			"style": {
+				"navigationStyle": "custom",
+				"backgroundColor": "#0F3460"
+			}
     },
     {
       "path": "pages/paging/paging",
