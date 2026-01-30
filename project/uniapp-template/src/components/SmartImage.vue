@@ -13,12 +13,9 @@ function onError(e: any) {
 
 <template>
   <image
-    :src="props.src || props.fallback"
+    :src="`https://images.weserv.nl/?url=${props.src}` || `https://images.weserv.nl/?url=${props.fallback}`"
     :class="props.cls"
+    referrer="no-referrer|origin|unsafe-url"
     mode="aspectFill"
-    @error="onError"
-  />
+    @error="onError" />
 </template>
-
-<style scoped>
-</style>

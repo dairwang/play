@@ -7,9 +7,9 @@ import SmartImage from '@/components/SmartImage.vue'
 import { DEFAULT_AVATAR, DEFAULT_BANNER, DEFAULT_GAME_ICON, GAME_ICON_MAP } from '@/common/images'
 
 const banners = ref<string[]>([
-  'https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1517466787929-48cae717c81a?q=80&w=1200&auto=format&fit=crop',
+  'https://gd-hbimg-edge.huaban.com/e1bb513150231b82200d939019c9aae298a5230138b170-y9zDhl_fw658webp?auth_key=1769774400-58157a2411ef47829d4b309967a3c9b5-0-d99016fdf36dadcb66248a34b225f223',
+  'https://gd-hbimg-edge.huaban.com/227636f00ffcf5a0b5202e3b86d8471f5931ccfac6fbd7-A6JneI_fw658webp?auth_key=1769774400-58157a2411ef47829d4b309967a3c9b5-0-46cdeeba653c7ac5369cb99a1a93894c',
+  'https://gd-hbimg-edge.huaban.com/fa713380e49b8d4564c48b5f6d1c48c0e82131e4bcc8bf-DSOBVR_fw658webp?auth_key=1769760000-716b8537ad70434882e1cf2209ab8d0e-0-6379e842d5116c435a2100742c8a6c55',
 ])
 
 const games = ref<any[]>([])
@@ -92,24 +92,16 @@ function selectGame(game: any) {
 </script>
 
 <template>
-  <view class="min-h-screen bg-gradient-to-b from-secondary via-dark to-black pb-24 overflow-x-hidden w-full">
+  <view class="home-container min-h-screen pb-24 overflow-x-hidden w-full">
     <view class="px-4 pt-6">
       <view class="flex items-center justify-between">
         <view class="flex items-center gap-3">
-          <view class="h-10 w-10 rounded-xl bg-gradient-to-tr from-primary to-pink-500 grid place-items-center animate-[pulse-glow_3s_ease_infinite]">
+          <view class="h-40px w-40px rounded-xl bg-gradient-to-tr from-primary to-pink-500 grid place-items-center animate-[pulse-glow_3s_ease_infinite]">
             🎮
           </view>
           <!-- <view class="hero-title">
             电竞陪玩
           </view> -->
-        </view>
-        <view class="hidden md:flex items-center gap-3">
-          <button class="btn-secondary-sm">
-            发现
-          </button>
-          <button class="btn-primary-sm">
-            发布
-          </button>
         </view>
       </view>
       <view class="mt-4">
@@ -117,26 +109,33 @@ function selectGame(game: any) {
       </view>
     </view>
 
-    <view class="px-4 mt-4">
-      <view class="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
-        <view
-          v-for="(item, idx) in banners"
-          :key="idx"
-          class="h-48 w-[85%] min-w-[280px] shrink-0 snap-center rounded-3xl overflow-hidden shadow-2xl"
-        >
-          <SmartImage :src="item" :fallback="fallbacks.banner" cls="w-full h-full object-cover" />
-        </view>
-      </view>
+    <view class="px-4 mt-4 banner-wrap">
+      <swiper
+        class="banner-swiper"
+        :indicator-dots="true"
+        indicator-color="rgba(255,255,255,0.4)"
+        indicator-active-color="#a855f7"
+        :autoplay="true"
+        :interval="4000"
+        :duration="500"
+        :circular="true"
+      >
+        <swiper-item v-for="(item, idx) in banners" :key="idx">
+          <view class="banner-item">
+            <SmartImage :src="item" :fallback="fallbacks.banner" cls="banner-img" />
+          </view>
+        </swiper-item>
+      </swiper>
     </view>
 
     <view class="mt-6">
       <view class="px-4 mb-3 flex justify-between items-end">
-        <text class="section-title">
+        <text class="section-title text-primary from-primary to-pink-500">
           热门游戏
         </text>
-        <text class="chip-info flex items-center">
+        <!-- <text class="chip-info flex items-center">
           查看全部
-        </text>
+        </text> -->
       </view>
 
       <view v-if="loadingGames" class="px-4">
@@ -170,7 +169,7 @@ function selectGame(game: any) {
       </view>
 
       <view v-else class="px-4">
-        <view class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+        <view class="grid grid-cols-5 sm:grid-cols-4 md:grid-cols-5 gap-4">
           <view
             v-for="game in games"
             :key="game.id || game.name"
@@ -197,7 +196,7 @@ function selectGame(game: any) {
 
     <view class="mt-8 px-4">
       <view class="mb-4">
-        <text class="section-title">
+        <text class="section-title text-primary">
           推荐陪玩
         </text>
       </view>
@@ -249,9 +248,9 @@ function selectGame(game: any) {
                 <text class="text-white font-bold text-sm">
                   {{ item.User?.nickname || '未知用户' }}
                 </text>
-                <text class="badge-primary ml-2">
+                <!-- <text class="badge-primary ml-2">
                   20
-                </text>
+                </text> -->
               </view>
             </view>
           </view>
@@ -260,15 +259,15 @@ function selectGame(game: any) {
               <text class="text-primary font-bold text-sm">
                 ¥{{ item.price }}/局
               </text>
-              <text class="text-gray-500 text-xs">
+              <!-- <text class="text-gray-500 text-xs">
                 0.5km
-              </text>
+              </text> -->
             </view>
             <view class="flex flex-wrap gap-1 items-center">
-              <text class="chip">
+              <text class="chip text-white">
                 {{ item.Game?.name || '未知游戏' }}
               </text>
-              <text class="chip-primary">
+              <text class="chip-primary text-white">
                 热门
               </text>
             </view>
@@ -280,10 +279,59 @@ function selectGame(game: any) {
 </template>
 
 <style scoped>
-.no-scrollbar {
-  scrollbar-width: none;
+.home-container {
+  background: linear-gradient(180deg, #1C0F3C 0%, #221245 50%, #1a0d35 100%);
+  position: relative;
+  min-height: 100vh;
 }
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+
+/* 添加星光纹理效果 */
+.home-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.15), transparent),
+    radial-gradient(2px 2px at 60% 70%, rgba(168, 85, 247, 0.2), transparent),
+    radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.1), transparent),
+    radial-gradient(1px 1px at 80% 10%, rgba(168, 85, 247, 0.15), transparent),
+    radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.1), transparent);
+  background-size: 200% 200%;
+  background-position: 0% 0%, 100% 100%, 50% 50%, 0% 100%, 100% 0%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-container > view {
+  position: relative;
+  z-index: 1;
+}
+
+.banner-wrap {
+  width: 91%;
+}
+
+.banner-swiper {
+  height: 384rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+.banner-item {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
