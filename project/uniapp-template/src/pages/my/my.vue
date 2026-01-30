@@ -158,7 +158,7 @@ function handleLogout() {
         </view>
         <view class="text-center">
           <view class="text-lg font-bold text-white">
-            0
+            {{ user.following_count ?? 0 }}
           </view>
           <view class="text-xs text-gray-500 mt-1">
             关注
@@ -166,7 +166,7 @@ function handleLogout() {
         </view>
         <view class="text-center">
           <view class="text-lg font-bold text-white">
-            0
+            {{ user.fans_count ?? 0 }}
           </view>
           <view class="text-xs text-gray-500 mt-1">
             粉丝

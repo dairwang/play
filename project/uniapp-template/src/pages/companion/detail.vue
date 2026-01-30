@@ -9,6 +9,9 @@ const detail = ref<any>({})
 const showOrderModal = ref(false)
 const remark = ref('')
 const submitting = ref(false)
+const is_followed = ref(false)
+const followLoading = ref(false)
+const hasToken = ref(!!uni.getStorageSync('token'))
 
 const fallbacks = {
   avatar: DEFAULT_AVATAR,
@@ -28,14 +31,66 @@ function toastError(msg: string) {
   })
 }
 
+async function checkFollowState(companionUserId: number) {
+  if (!hasToken.value || !companionUserId)
+    return
+  try {
+    const res: any = await request({ url: `/users/${companionUserId}/follow/check` })
+    is_followed.value = res.data?.is_followed ?? false
+  }
+  catch {
+    is_followed.value = false
+  }
+}
+
+async function toggleFollow() {
+  const companionUserId = detail.value?.User?.id
+  if (!companionUserId) {
+    toastError('陪玩信息缺失')
+    return
+  }
+  if (!hasToken.value) {
+    toastError('请先登录')
+    return
+  }
+  followLoading.value = true
+  try {
+    if (is_followed.value) {
+      await request({
+        url: `/users/${companionUserId}/follow`,
+        method: 'DELETE',
+      })
+      is_followed.value = false
+      toastSuccess('已取消关注')
+    }
+    else {
+      await request({
+        url: `/users/${companionUserId}/follow`,
+        method: 'POST',
+      })
+      is_followed.value = true
+      toastSuccess('关注成功')
+    }
+  }
+  catch (error: any) {
+    toastError(error?.msg || '操作失败')
+  }
+  finally {
+    followLoading.value = false
+  }
+}
+
 onLoad(async (options) => {
   const id = options?.id
   if (!id)
     return
+  hasToken.value = !!uni.getStorageSync('token')
 
   try {
     const res: any = await request({ url: `/companions/detail?id=${id}` })
     detail.value = res.data
+    if (detail.value?.User?.id)
+      await checkFollowState(detail.value.User.id)
   }
   catch (e) {
     console.error(e)
@@ -92,9 +147,20 @@ async function submitOrder() {
           <view class="text-white font-bold text-lg">
             {{ detail.User?.nickname || '未知' }}
           </view>
-          <text class="chip-primary">
-            认证陪玩
-          </text>
+          <view class="flex items-center gap-2">
+            <text class="chip-primary">
+              认证陪玩
+            </text>
+            <button
+              v-if="hasToken"
+              class="chip text-sm px-3 py-1 rounded-full border transition-colors"
+              :class="is_followed ? 'border-primary bg-primary/20 text-primary' : 'border-white/30 text-gray-300'"
+              :disabled="followLoading"
+              @click="toggleFollow"
+            >
+              {{ followLoading ? '...' : (is_followed ? '已关注' : '关注') }}
+            </button>
+          </view>
         </view>
         <view class="flex items-center gap-2 mb-2">
           <text class="text-primary font-bold">

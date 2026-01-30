@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Follow = require('../models/follow');
 const jwt = require('jsonwebtoken');
 
 // Secret key for JWT (Should be in .env in production)
@@ -75,7 +76,6 @@ exports.login = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
     try {
-        // req.user is set by auth middleware
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] }
         });
@@ -84,7 +84,13 @@ exports.getProfile = async (req, res) => {
             return res.status(404).json({ code: 404, msg: '用户不存在' });
         }
 
-        res.json({ code: 200, data: user });
+        const profile = user.toJSON();
+        const followingCount = await Follow.count({ where: { follower_id: req.user.id } });
+        const fansCount = await Follow.count({ where: { following_id: req.user.id } });
+        profile.following_count = followingCount;
+        profile.fans_count = fansCount;
+
+        res.json({ code: 200, data: profile });
     } catch (error) {
         res.status(500).json({ code: 500, msg: '服务器错误' });
     }
