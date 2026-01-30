@@ -9,6 +9,7 @@ interface OrderItem {
   order_no: string
   status: string
   amount: number
+  duration_hours?: number | string
   remark?: string
   rating?: number | null
   review?: string | null
@@ -121,11 +122,25 @@ function getStatusColor(status: string) {
   return map[status] || ''
 }
 
+function formatHours(hours: number | string | undefined): string {
+  if (hours === undefined || hours === null)
+    return '0小时'
+  const num = typeof hours === 'string' ? Number.parseFloat(hours) : hours
+  if (Number.isNaN(num))
+    return '0小时'
+  // 如果是整数，去掉小数部分
+  if (num % 1 === 0)
+    return `${num}小时`
+  // 如果有小数，保留一位小数
+  return `${num.toFixed(1)}小时`
+}
+
 /** 已完成且未评价：无 rating 或 rating 为 null/undefined 时显示评价入口 */
 function canEvaluate(item: OrderItem) {
-  if (item.status !== 'completed') return false
+  if (item.status !== 'completed')
+    return false
   const r = item.rating
-  return r === null || r === undefined || r === ''
+  return r === null || r === undefined
 }
 
 async function cancelOrder(item: OrderItem) {
@@ -198,7 +213,8 @@ function closeEvaluateModal() {
 
 async function submitEvaluate() {
   const item = evaluateOrderItem.value
-  if (!item) return
+  if (!item)
+    return
   evaluateSubmitting.value = true
   try {
     await request({
@@ -225,7 +241,7 @@ async function submitEvaluate() {
 <template>
   <view class="page-container min-h-screen px-4 py-6">
     <HNavBar title="我的订单" :placeholder="true" />
-    <view class="text-white font-bold text-lg mb-4 mt-16">
+    <view class="text-white font-bold text-lg mb-4">
       订单列表
     </view>
 
@@ -234,7 +250,7 @@ async function submitEvaluate() {
       <button
         v-for="tab in tabs"
         :key="tab.value"
-        class="flex-1 py-3 text-center transition-colors relative"
+        class="flex-1 text-center transition-colors relative h-30px line-height-30px"
         :class="currentTab === tab.value ? 'text-primary font-bold' : 'text-gray-400'"
         @click="currentTab = tab.value"
       >
@@ -266,7 +282,7 @@ async function submitEvaluate() {
       <view
         v-for="item in list"
         :key="item.id"
-        class="card p-4"
+        class="card p-4 bg-[#291a52] rounded-10px"
       >
         <view class="flex justify-between items-center mb-3 pb-3 border-b border-white/5">
           <text class="text-xs text-gray-500">
@@ -283,7 +299,7 @@ async function submitEvaluate() {
         <view class="flex items-start gap-3 mb-3">
           <SmartImage
             :src="currentTab === 'client' ? item.Companion?.avatar : item.Client?.avatar"
-            cls="w-12 h-12 rounded-full object-cover bg-gray-700"
+            cls="w-20px h-20px rounded-full object-cover bg-gray-700"
           />
           <view class="flex-1">
             <view class="flex justify-between">
@@ -294,9 +310,15 @@ async function submitEvaluate() {
                 ¥{{ item.amount }}
               </text>
             </view>
-            <text class="text-xs text-gray-400 mt-1">
-              游戏: {{ item.Game?.name }}
-            </text>
+            <view class="flex justify-between">
+              <text class="text-xs text-gray-400 mt-1">
+                游戏: {{ item.Game?.name }}
+              </text>
+              <text class="text-primary" text="12px">
+                {{ formatHours(item.duration_hours) }}
+              </text>
+            </view>
+
             <view
               v-if="item.remark"
               class="text-xs text-gray-500 mt-2 bg-white/5 p-2 rounded"
@@ -367,7 +389,7 @@ async function submitEvaluate() {
       :round="20"
       :close-on-click-overlay="true"
       :closeable="true"
-      bg-color="#16213E"
+      bg-color="#1C0F3C"
       @close="closeEvaluateModal"
     >
       <view class="p-6 pb-10">
@@ -414,7 +436,7 @@ async function submitEvaluate() {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.15), transparent),
     radial-gradient(2px 2px at 60% 70%, rgba(168, 85, 247, 0.2), transparent),
     radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.1), transparent),
@@ -429,5 +451,9 @@ async function submitEvaluate() {
 .page-container > view {
   position: relative;
   z-index: 1;
+}
+uni-button{
+  margin-right: 0px !important;
+  margin-left: 12px !important;
 }
 </style>

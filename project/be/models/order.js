@@ -40,7 +40,14 @@ const Order = sequelize.define('Order', {
     },
     amount: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: false,
+        comment: '订单总金额'
+    },
+    duration_hours: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 1,
+        comment: '陪玩时长（小时）'
     },
     remark: {
         type: DataTypes.TEXT,

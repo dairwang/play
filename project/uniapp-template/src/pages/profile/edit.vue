@@ -118,17 +118,14 @@ onMounted(() => {
   <view class="page-container min-h-screen px-4 py-6">
     <HNavBar title="编辑资料" :placeholder="true" />
 
-    <view class="mt-16 space-y-6">
+    <view class="flex items-center flex-col">
       <!-- 头像预览 -->
-      <view class="flex items-center gap-4">
+      <view class="">
         <image
-          :src="form.avatar"
-          class="w-16 h-16 rounded-full border-2 border-primary object-cover bg-gray-700"
+          :src="`https://images.weserv.nl/?url=${form.avatar}`"
+          class="w-60px h-60px rounded-full border-2 border-primary object-cover bg-gray-700"
           mode="aspectFill"
         />
-        <view class="flex-1 text-xs text-gray-400">
-          头像地址将从网络加载，请填写可访问的图片 URL。
-        </view>
       </view>
 
       <!-- 基本信息 -->
@@ -143,7 +140,7 @@ onMounted(() => {
           </view>
           <input
             v-model="form.avatar"
-            class="w-full bg-[#0f3460] text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+            class=" bg-[#0f3460] text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
             placeholder="请输入头像图片的网络地址"
           >
         </view>
@@ -154,7 +151,7 @@ onMounted(() => {
           </view>
           <input
             v-model="form.nickname"
-            class="w-full bg-[#0f3460] text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+            class=" bg-[#0f3460] text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
             placeholder="请输入昵称"
           >
         </view>
@@ -166,7 +163,7 @@ onMounted(() => {
           <textarea
             v-model="form.signature"
             rows="3"
-            class="w-full bg-[#0f3460] text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary placeholder-gray-500 resize-none"
+            class=" bg-[#0f3460] text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary placeholder-gray-500 resize-none"
             placeholder="写一句话介绍自己吧～"
           />
         </view>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import SmartImage from '@/components/SmartImage.vue'
@@ -8,6 +8,7 @@ import { DEFAULT_AVATAR } from '@/common/images'
 const detail = ref<any>({})
 const showOrderModal = ref(false)
 const remark = ref('')
+const durationHours = ref<number | null>(1)
 const submitting = ref(false)
 const is_followed = ref(false)
 const followLoading = ref(false)
@@ -16,6 +17,14 @@ const hasToken = ref(!!uni.getStorageSync('token'))
 const fallbacks = {
   avatar: DEFAULT_AVATAR,
 }
+
+const totalAmount = computed(() => {
+  const hours = Number(durationHours.value) || 0
+  const price = Number(detail.value?.price) || 0
+  if (!hours || !price)
+    return 0
+  return Number((hours * price).toFixed(2))
+})
 
 function toastSuccess(msg: string) {
   uni.showToast({
@@ -104,6 +113,12 @@ async function submitOrder() {
     return
   }
 
+  const hours = Number(durationHours.value)
+  if (!hours || hours <= 0) {
+    toastError('请输入有效的陪玩时长（小时）')
+    return
+  }
+
   submitting.value = true
   try {
     await request({
@@ -112,7 +127,9 @@ async function submitOrder() {
       data: {
         companion_id: detail.value.User.id,
         game_id: detail.value.game_id,
-        amount: detail.value.price,
+        // 金额 = 单价 * 时长
+        amount: totalAmount.value,
+        duration_hours: hours,
         remark: remark.value,
       },
     })
@@ -137,24 +154,24 @@ async function submitOrder() {
 <template>
   <view class="page-container min-h-screen px-4 py-6">
     <HNavBar title="陪玩详情" :placeholder="true" />
-    <view class="text-white font-bold text-lg mb-4 mt-16">
+    <view class="text-white font-bold text-lg mb-4">
       陪玩详情
     </view>
     <view class="card overflow-hidden">
-      <SmartImage :src="detail.User?.avatar" :fallback="fallbacks.avatar" cls="w-full h-56 object-cover" />
+      <SmartImage :src="detail.User?.avatar" :fallback="fallbacks.avatar" cls="w-full h-156px object-cover" />
       <view class="p-4">
         <view class="flex items-center justify-between mb-2">
           <view class="text-white font-bold text-lg">
             {{ detail.User?.nickname || '未知' }}
-          </view>
-          <view class="flex items-center gap-2">
-            <text class="chip-primary">
+            <text class="chip-primary text-white" text="10px">
               认证陪玩
             </text>
+          </view>
+          <view class="flex items-center gap-2">
             <button
               v-if="hasToken"
               class="chip text-sm px-3 py-1 rounded-full border transition-colors"
-              :class="is_followed ? 'border-primary bg-primary/20 text-primary' : 'border-white/30 text-gray-300'"
+              :class="is_followed ? 'border-primary bg-primary/20 text-primary' : 'border-white/30  c-[#291a52]'"
               :disabled="followLoading"
               @click="toggleFollow"
             >
@@ -170,16 +187,16 @@ async function submitOrder() {
           </text>
         </view>
         <view class="flex items-center gap-2 mb-2">
-          <text class="text-primary font-bold">
-            ¥{{ detail.price }}/局
+          <text class="text-primary font-bold ">
+            ¥{{ detail.price }}/时
           </text>
-          <text class="chip">
+          <text class="chip text-white">
             {{ detail.Game?.name }}
           </text>
         </view>
         <!-- 陪玩签名 -->
         <view class="text-gray-400">
-          擅长：开黑交流、战术沟通、温柔陪伴
+          {{ detail.User?.description }}
         </view>
         <button class="btn-primary w-full mt-4" @click="showOrderModal = true">
           立即下单
@@ -187,23 +204,20 @@ async function submitOrder() {
       </view>
     </view>
 
-    <!-- Order Modal -->
-    <view
-      v-if="showOrderModal"
-      class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm"
-      @tap="showOrderModal = false"
+    <!-- 确认下单：使用 u-popup 底部弹出，参考订单评价弹层 -->
+    <u-popup
+      v-model:show="showOrderModal"
+      mode="bottom"
+      :round="20"
+      :close-on-click-overlay="true"
+      :closeable="true"
+      bg-color="#1C0F3C"
     >
-      <view
-        class="bg-[#16213E] w-full sm:w-96 rounded-t-2xl sm:rounded-2xl p-6 border-t sm:border border-white/10 animate-slide-up"
-        @tap.stop
-      >
-        <view class="flex justify-between items-center mb-6">
-          <view class="text-lg font-bold text-white">
+      <view class="p-6 pb-10">
+        <view class="flex justify-between items-center mb-4">
+          <text class="text-lg font-bold text-white">
             确认下单
-          </view>
-          <button class="text-gray-400" @click="showOrderModal = false">
-            ×
-          </button>
+          </text>
         </view>
 
         <view class="space-y-4">
@@ -225,13 +239,43 @@ async function submitOrder() {
           </view>
           <view class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
             <text class="text-gray-400">
-              价格
+              单价
             </text>
             <text class="text-primary font-bold">
               ¥{{ detail.price }}/小时
             </text>
           </view>
 
+          <!-- 陪玩时长输入 -->
+          <view class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
+            <text class="text-gray-400">
+              陪玩时长
+            </text>
+            <view class="flex items-center gap-2">
+              <input
+                v-model.number="durationHours"
+                type="number"
+                class="w-50px bg-black/30 text-white rounded px-2 py-1 text-sm text-right"
+                placeholder="小时"
+                min="1"
+              >
+              <text class="text-gray-400 text-xs">
+                小时
+              </text>
+            </view>
+          </view>
+
+          <!-- 总金额 -->
+          <view class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
+            <text class="text-gray-400">
+              总金额
+            </text>
+            <text class="text-primary font-bold">
+              ¥{{ totalAmount }}
+            </text>
+          </view>
+
+          <!-- 备注 -->
           <view>
             <view class="block text-gray-400 text-sm mb-2">
               订单备注
@@ -252,11 +296,11 @@ async function submitOrder() {
             <text v-if="submitting" class="animate-spin mr-2">
               ⏳
             </text>
-            {{ submitting ? '下单中...' : '确认支付' }}
+            {{ submitting ? '下单中...' : `确认支付 ¥${totalAmount}` }}
           </button>
         </view>
       </view>
-    </view>
+    </u-popup>
   </view>
 </template>
 

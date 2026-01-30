@@ -56,24 +56,11 @@
       }
     },
     {
-      "path": "pages/paging/paging",
-      "style": {
-        "navigationStyle": "custom"
-      }
-    },
-    {
       "path": "pages/mescroll/mescroll",
       "style": {
         "navigationBarTitleText": "mescroll",
         "enablePullDownRefresh": false
       }
-    },
-    {
-      "path": "pages/demo/tabbar",
-      "style": {
-        "navigationStyle": "custom"
-      }
-
     }
   ],
   "tabBar": {

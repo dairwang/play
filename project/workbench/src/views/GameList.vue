@@ -25,6 +25,36 @@ const rules = {
   cover: [{ required: true, message: '请输入封面链接', trigger: 'blur' }]
 }
 
+// 处理图片 URL，解决跨域问题
+const processImageUrl = (url) => {
+  if (!url) return ''
+  
+  // 如果 URL 已经包含代理，直接返回
+  if (url.includes('images.weserv.nl') || url.includes('proxy')) {
+    return url
+  }
+  
+  // 对于某些可能有跨域问题的图片服务器，尝试通过代理访问
+  // 如果图片无法加载，可以启用下面的代理方案
+  // 注意：某些图片服务器可能不允许代理访问
+  
+  // 检测可能需要代理的域名
+  const needProxyDomains = ['huaban.com', 'pinterest.com', 'imgur.com']
+  const needsProxy = needProxyDomains.some(domain => url.includes(domain))
+  
+  if (needsProxy) {
+    // 使用 weserv.nl 图片代理服务
+    try {
+      return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&output=webp&q=85`
+    } catch (e) {
+      console.warn('图片 URL 编码失败，使用原 URL:', e)
+      return url
+    }
+  }
+  
+  return url
+}
+
 // Fetch List
 const fetchGames = async () => {
   loading.value = true
@@ -135,22 +165,38 @@ onMounted(() => {
         <el-table-column label="图标" width="100">
           <template #default="scope">
             <el-image 
-              :src="scope.row.icon" 
+              :src="processImageUrl(scope.row.icon)" 
               class="w-10 h-10 rounded-lg bg-white/5" 
               fit="cover"
-            />
+              referrerpolicy="no-referrer"
+              crossorigin="anonymous"
+            >
+              <template #error>
+                <div class="w-full h-full flex items-center justify-center bg-white/5 text-gray-500 text-xs">
+                  加载失败
+                </div>
+              </template>
+            </el-image>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="名称" />
         <el-table-column label="封面" width="120">
           <template #default="scope">
              <el-image 
-              :src="scope.row.cover" 
+              :src="processImageUrl(scope.row.cover)" 
               class="w-16 h-10 rounded-lg bg-white/5" 
               fit="cover"
-              :preview-src-list="[scope.row.cover]"
+              :preview-src-list="[processImageUrl(scope.row.cover)]"
               preview-teleported
-            />
+              referrerpolicy="no-referrer"
+              crossorigin="anonymous"
+            >
+              <template #error>
+                <div class="w-full h-full flex items-center justify-center bg-white/5 text-gray-500 text-xs">
+                  加载失败
+                </div>
+              </template>
+            </el-image>
           </template>
         </el-table-column>
         <el-table-column prop="created_at" label="创建时间">
@@ -189,11 +235,43 @@ onMounted(() => {
         <div v-if="formData.icon || formData.cover" class="flex gap-4 mt-2">
           <div v-if="formData.icon" class="text-center">
             <div class="text-xs text-gray-400 mb-1">图标预览</div>
-            <img :src="formData.icon" class="w-16 h-16 rounded-lg object-cover bg-gray-700" />
+            <el-image 
+              :src="processImageUrl(formData.icon)" 
+              class="w-16 h-16 rounded-lg bg-gray-700"
+              fit="cover"
+              :preview-src-list="[processImageUrl(formData.icon)]"
+              preview-teleported
+              referrerpolicy="no-referrer"
+              crossorigin="anonymous"
+              :hide-on-click-modal="true"
+            >
+              <template #error>
+                <div class="w-full h-full flex items-center justify-center bg-gray-700 text-gray-500 text-xs">
+                  加载失败<br>
+                  <span class="text-[10px] mt-1">请检查图片 URL</span>
+                </div>
+              </template>
+            </el-image>
           </div>
           <div v-if="formData.cover" class="text-center">
             <div class="text-xs text-gray-400 mb-1">封面预览</div>
-            <img :src="formData.cover" class="w-24 h-16 rounded-lg object-cover bg-gray-700" />
+            <el-image 
+              :src="processImageUrl(formData.cover)" 
+              class="w-24 h-16 rounded-lg bg-gray-700"
+              fit="cover"
+              :preview-src-list="[processImageUrl(formData.cover)]"
+              preview-teleported
+              referrerpolicy="no-referrer"
+              crossorigin="anonymous"
+              :hide-on-click-modal="true"
+            >
+              <template #error>
+                <div class="w-full h-full flex items-center justify-center bg-gray-700 text-gray-500 text-xs">
+                  加载失败<br>
+                  <span class="text-[10px] mt-1">请检查图片 URL</span>
+                </div>
+              </template>
+            </el-image>
           </div>
         </div>
 

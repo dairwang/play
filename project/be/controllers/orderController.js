@@ -7,7 +7,7 @@ const { Op } = require('sequelize');
 // Create Order (User)
 exports.createOrder = async (req, res) => {
     try {
-        const { companion_id, game_id, amount, remark } = req.body;
+        const { companion_id, game_id, amount, duration_hours, remark } = req.body;
         const user_id = req.user.id;
 
         // Simple validation: cannot order self
@@ -15,12 +15,23 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ code: 400, msg: '不能向自己下单' });
         }
 
+        const hours = Number(duration_hours);
+        if (!hours || hours <= 0) {
+            return res.status(400).json({ code: 400, msg: '陪玩时长必须大于 0 小时' });
+        }
+
+        const finalAmount = Number(amount);
+        if (!finalAmount || finalAmount <= 0) {
+            return res.status(400).json({ code: 400, msg: '订单金额不合法' });
+        }
+
         const order = await Order.create({
             order_no: uuidv4().replace(/-/g, ''),
             user_id,
             companion_id,
             game_id,
-            amount,
+            amount: finalAmount,
+            duration_hours: hours,
             remark,
             status: 'pending'
         });

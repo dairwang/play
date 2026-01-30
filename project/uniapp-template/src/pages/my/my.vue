@@ -121,7 +121,7 @@ function handleLogout() {
           <SmartImage
             :src="user.avatar"
             :fallback="fallbacks.avatar"
-            cls="w-20 h-20 rounded-full border-2 border-primary shadow-xl object-cover"
+            cls="w-60px h-60px rounded-full border-2 border-primary shadow-xl object-cover"
           />
           <view
             v-if="user.is_companion"
@@ -147,7 +147,7 @@ function handleLogout() {
         </view>
       </view>
 
-      <view class="flex justify-around mt-8">
+      <view class="flex justify-around mt-8  bg-[#291a52] px-8px py-16px rounded-10px">
         <view class="text-center">
           <view class="text-lg font-bold text-white">
             {{ user.balance || '0.00' }}
@@ -175,7 +175,7 @@ function handleLogout() {
       </view>
     </view>
 
-    <view class="px-4 mt-4">
+    <view class="px-4 mt-4 bg-[#291a52] px-8px py-16px rounded-10px">
       <!-- Service Management Section -->
       <view
         v-if="user.is_companion"
@@ -230,7 +230,7 @@ function handleLogout() {
       </view>
 
       <view
-        class="card p-4 mb-4 cursor-pointer hover:shadow-2xl transition-shadow"
+        class="card p-4 mb-4 cursor-pointer hover:shadow-2xl transition-shadow "
         @tap="goOrderList('all')"
       >
         <view class="flex justify-between items-center mb-4">
