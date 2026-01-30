@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import SearchBar from '@/components/SearchBar.vue'
 import SmartImage from '@/components/SmartImage.vue'
@@ -26,7 +27,8 @@ const fallbacks = {
   banner: DEFAULT_BANNER,
 }
 
-onMounted(() => {
+// 每次显示页面时重新拉取数据（含切换 tabBar 回到首页）
+onShow(() => {
   fetchGames()
   fetchCompanions()
 })

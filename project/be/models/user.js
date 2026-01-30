@@ -20,6 +20,11 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    // 个性签名 / 个人简介
+    signature: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     avatar: {
         type: DataTypes.STRING,
         defaultValue: 'https://images.unsplash.com/photo-1542206395-9feb3edaa68f?q=80&w=400&auto=format&fit=crop'

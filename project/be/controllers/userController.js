@@ -27,11 +27,11 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// 更新用户信息（昵称 / 角色 / 是否陪玩 / 余额）
+// 更新用户信息（头像 / 昵称 / 签名 / 角色 / 是否陪玩 / 余额）
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { nickname, role, is_companion, balance } = req.body;
+        const { nickname, role, is_companion, balance, avatar, signature } = req.body;
 
         const user = await User.findByPk(id);
         if (!user) {
@@ -46,6 +46,8 @@ exports.updateUser = async (req, res) => {
 
         await user.update({
             nickname: nickname ?? user.nickname,
+            signature: signature !== undefined ? signature : user.signature,
+            avatar: avatar !== undefined ? avatar : user.avatar,
             role: nextRole,
             is_companion: typeof is_companion === 'boolean' ? is_companion : user.is_companion,
             balance: balance !== undefined ? balance : user.balance,

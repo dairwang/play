@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { DEFAULT_AVATAR } from '@/common/images'
 import SmartImage from '@/components/SmartImage.vue'
 import HTabBar from '@/components/hexui/HTabBar.vue'
@@ -26,7 +27,8 @@ function toastError(msg: string) {
   })
 }
 
-onMounted(() => {
+// 每次显示页面时重新拉取数据（含切换 tabBar 回到我的）
+onShow(() => {
   const userData = uni.getStorageSync('user')
   if (userData)
     user.value = typeof userData === 'string' ? JSON.parse(userData) : userData
@@ -90,6 +92,12 @@ function goOrderList(type: string) {
   })
 }
 
+function goEditProfile() {
+  uni.navigateTo({
+    url: '/pages/profile/edit',
+  })
+}
+
 function handleApplyCompanion() {
   uni.navigateTo({
     url: '/pages/apply/apply',
@@ -131,7 +139,10 @@ function handleLogout() {
           </view>
         </view>
         <!-- 点击进入编辑资料页面 -->
-        <view class="text-gray-400">
+        <view
+          class="text-gray-400"
+          @tap="goEditProfile"
+        >
           ›
         </view>
       </view>

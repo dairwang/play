@@ -49,6 +49,13 @@
       }
     },
     {
+      "path": "pages/profile/edit",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#0F3460"
+      }
+    },
+    {
       "path": "pages/paging/paging",
       "style": {
         "navigationStyle": "custom"

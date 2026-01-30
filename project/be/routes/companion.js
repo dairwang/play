@@ -11,6 +11,7 @@ router.get('/detail', companionController.getDetail);
 router.post('/apply', authMiddleware, companionController.applyService);
 router.get('/my', authMiddleware, companionController.getMyServices);
 router.post('/toggle/:id', authMiddleware, companionController.toggleStatus);
+router.put('/update/:id', authMiddleware, companionController.updateMyService);
 
 // Admin
 router.get('/audit/list', authMiddleware, companionController.getAuditList);

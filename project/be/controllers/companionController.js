@@ -62,6 +62,33 @@ exports.applyService = async (req, res) => {
     }
 };
 
+// Update my service info (price / description)
+exports.updateMyService = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user_id = req.user.id;
+        const { price, description } = req.body;
+
+        const service = await CompanionService.findOne({ where: { id, user_id } });
+        if (!service) {
+            return res.status(404).json({ code: 404, msg: '陪玩服务不存在' });
+        }
+
+        if (price !== undefined) {
+            service.price = price;
+        }
+        if (description !== undefined) {
+            service.description = description;
+        }
+
+        await service.save();
+        res.json({ code: 200, msg: '陪玩服务已更新', data: service });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ code: 500, msg: '服务器错误' });
+    }
+};
+
 // Get My Services (User)
 exports.getMyServices = async (req, res) => {
     try {
