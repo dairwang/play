@@ -10,6 +10,8 @@ interface OrderItem {
   status: string
   amount: number
   remark?: string
+  rating?: number | null
+  review?: string | null
   Game?: {
     name?: string
   }
@@ -33,6 +35,11 @@ type TabValue = (typeof tabs)[number]['value']
 const currentTab = ref<TabValue>('client')
 const list = ref<OrderItem[]>([])
 const loading = ref(false)
+const showEvaluateModal = ref(false)
+const evaluateOrderItem = ref<OrderItem | null>(null)
+const evaluateRating = ref(5)
+const evaluateReview = ref('')
+const evaluateSubmitting = ref(false)
 
 function toastSuccess(msg: string) {
   uni.showToast({
@@ -114,6 +121,13 @@ function getStatusColor(status: string) {
   return map[status] || ''
 }
 
+/** 已完成且未评价：无 rating 或 rating 为 null/undefined 时显示评价入口 */
+function canEvaluate(item: OrderItem) {
+  if (item.status !== 'completed') return false
+  const r = item.rating
+  return r === null || r === undefined || r === ''
+}
+
 async function cancelOrder(item: OrderItem) {
   try {
     await showConfirm('确定取消该订单吗？')
@@ -167,6 +181,43 @@ async function applyRefund(item: OrderItem) {
   catch (e: any) {
     if (e !== false)
       toastError(e?.msg || '操作失败')
+  }
+}
+
+function openEvaluateModal(item: OrderItem) {
+  evaluateOrderItem.value = item
+  evaluateRating.value = 5
+  evaluateReview.value = ''
+  showEvaluateModal.value = true
+}
+
+function closeEvaluateModal() {
+  showEvaluateModal.value = false
+  evaluateOrderItem.value = null
+}
+
+async function submitEvaluate() {
+  const item = evaluateOrderItem.value
+  if (!item) return
+  evaluateSubmitting.value = true
+  try {
+    await request({
+      url: `/orders/evaluate/${item.id}`,
+      method: 'POST',
+      data: {
+        rating: evaluateRating.value,
+        review: evaluateReview.value || undefined,
+      },
+    })
+    toastSuccess('评价成功')
+    closeEvaluateModal()
+    await fetchList()
+  }
+  catch (e: any) {
+    toastError(e?.msg || '评价失败')
+  }
+  finally {
+    evaluateSubmitting.value = false
   }
 }
 </script>
@@ -255,9 +306,16 @@ async function applyRefund(item: OrderItem) {
           </view>
         </view>
 
-        <view class="flex justify-end pt-2 border-t border-white/5 gap-2">
-          <!-- Client Actions -->
+        <view class="flex justify-end pt-2 border-t border-white/5 gap-2 flex-wrap">
+          <!-- Client Actions：评价入口优先展示 -->
           <template v-if="currentTab === 'client'">
+            <button
+              v-if="canEvaluate(item)"
+              class="btn-primary text-xs px-3 py-1"
+              @click="openEvaluateModal(item)"
+            >
+              评价
+            </button>
             <button
               v-if="item.status === 'pending'"
               class="btn-outline text-xs px-3 py-1"
@@ -301,6 +359,44 @@ async function applyRefund(item: OrderItem) {
         </view>
       </view>
     </view>
+
+    <!-- 评价弹出层：使用 u-popup，用法参考 uni-popup -->
+    <u-popup
+      v-model:show="showEvaluateModal"
+      mode="bottom"
+      :round="20"
+      :close-on-click-overlay="true"
+      :closeable="true"
+      bg-color="#16213E"
+      @close="closeEvaluateModal"
+    >
+      <view class="p-6 pb-10">
+        <view class="flex justify-between items-center mb-4">
+          <text class="text-lg font-bold text-white">
+            订单评价
+          </text>
+        </view>
+        <view class="mb-4">
+          <text class="text-gray-400 text-sm block mb-2">评分</text>
+          <u-rate v-model="evaluateRating" :count="5" size="20" active-color="#FF2D55" />
+        </view>
+        <view class="mb-6">
+          <text class="text-gray-400 text-sm block mb-2">评价内容（选填）</text>
+          <textarea
+            v-model="evaluateReview"
+            class="w-full bg-black/20 text-white rounded-lg p-3 outline-none focus:ring-1 focus:ring-primary resize-none placeholder-gray-600 text-sm min-h-[80px]"
+            placeholder="说说你的体验吧..."
+          />
+        </view>
+        <button
+          class="w-full btn-primary py-3 flex items-center justify-center"
+          :disabled="evaluateSubmitting"
+          @click="submitEvaluate"
+        >
+          {{ evaluateSubmitting ? '提交中...' : '确认提交' }}
+        </button>
+      </view>
+    </u-popup>
   </view>
 </template>
 

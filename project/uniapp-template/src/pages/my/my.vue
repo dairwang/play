@@ -88,7 +88,7 @@ function getStatusColor(status: string) {
 
 function goOrderList(type: string) {
   uni.navigateTo({
-    url: `/pages/order-list/order-list?type=${type}`,
+    url: `/pages/order/list?type=${type}`,
   })
 }
 

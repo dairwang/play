@@ -55,6 +55,24 @@ const Order = sequelize.define('Order', {
     completed_at: {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    // 订单评价：1-5 星
+    rating: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: '1-5 星评分'
+    },
+    // 评价文字
+    review: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        comment: '评价内容'
+    },
+    // 评价时间
+    evaluated_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        comment: '评价时间'
     }
 }, {
     tableName: 'orders',

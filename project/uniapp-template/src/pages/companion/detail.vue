@@ -162,6 +162,13 @@ async function submitOrder() {
             </button>
           </view>
         </view>
+        <!-- 评价结果：陪玩昵称下方展示 -->
+        <view v-if="detail.evaluation_count > 0" class="flex items-center gap-2 mb-2">
+          <u-rate :model-value="detail.average_rating" :count="5" size="14" readonly active-color="#FF2D55" />
+          <text class="text-gray-400 text-sm">
+            {{ detail.average_rating }} 分 · 共 {{ detail.evaluation_count }} 条评价
+          </text>
+        </view>
         <view class="flex items-center gap-2 mb-2">
           <text class="text-primary font-bold">
             ¥{{ detail.price }}/局

@@ -1,6 +1,7 @@
 const CompanionService = require('../models/companionService');
 const User = require('../models/user');
 const Game = require('../models/game');
+const Order = require('../models/order');
 const { Op } = require('sequelize');
 
 // Get list (Public - with filters)
@@ -196,7 +197,23 @@ exports.getDetail = async (req, res) => {
         if (!service) {
             return res.status(404).json({ code: 404, msg: '陪玩服务不存在' });
         }
-        res.json({ code: 200, data: service });
+
+        const companionUserId = service.user_id;
+        const evaluation_count = await Order.count({
+            where: { companion_id: companionUserId, rating: { [Op.ne]: null } }
+        });
+        const evaluatedOrders = await Order.findAll({
+            where: { companion_id: companionUserId, rating: { [Op.ne]: null } },
+            attributes: ['rating']
+        });
+        const sum = evaluatedOrders.reduce((s, o) => s + Number(o.rating), 0);
+        const average_rating = evaluation_count > 0 ? (sum / evaluation_count).toFixed(1) : 0;
+
+        const data = service.toJSON();
+        data.evaluation_count = evaluation_count;
+        data.average_rating = Number(average_rating);
+
+        res.json({ code: 200, data });
     } catch (error) {
         console.error(error);
         res.status(500).json({ code: 500, msg: '服务器错误' });

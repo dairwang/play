@@ -8,6 +8,7 @@ router.get('/my', authMiddleware, orderController.getMyOrders);
 router.post('/accept/:id', authMiddleware, orderController.acceptOrder);
 router.post('/complete/:id', authMiddleware, orderController.completeOrder);
 router.post('/cancel/:id', authMiddleware, orderController.cancelOrder);
+router.post('/evaluate/:id', authMiddleware, orderController.evaluateOrder);
 
 // Admin
 router.get('/all', authMiddleware, orderController.getAllOrders);
