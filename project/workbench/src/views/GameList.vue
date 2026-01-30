@@ -86,7 +86,15 @@ const handleDelete = async (row) => {
     await request.delete(`/games/delete/${row.id}`)
     Toast.success('删除成功')
     fetchGames()
-  } catch (error) {}
+  } catch (error) {
+    // 用户取消确认对话框时，error 为 false，不需要处理
+    if (error === false) {
+      return
+    }
+    // 其他错误已经在 request 拦截器中处理并显示 Toast
+    // 这里可以添加额外的错误处理逻辑，比如记录日志等
+    console.error('删除游戏失败:', error)
+  }
 }
 
 onMounted(() => {

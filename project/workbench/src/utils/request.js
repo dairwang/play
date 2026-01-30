@@ -25,16 +25,30 @@ service.interceptors.response.use(
   (response) => {
     const res = response.data
     if (res.code !== 200) {
-      Toast.error(res.msg || 'Error')
-      return Promise.reject(new Error(res.msg || 'Error'))
+      const errorMsg = res.msg || '请求失败'
+      Toast.error(errorMsg)
+      return Promise.reject(new Error(errorMsg))
     } else {
       return res.data
     }
   },
   (error) => {
-    console.log('err' + error)
-    Toast.error(error.message)
-    return Promise.reject(error)
+    // 处理 HTTP 错误响应
+    if (error.response) {
+      const res = error.response.data
+      const errorMsg = res?.msg || res?.message || error.response.statusText || '请求失败'
+      Toast.error(errorMsg)
+      return Promise.reject(new Error(errorMsg))
+    } else if (error.request) {
+      // 请求已发出但没有收到响应
+      Toast.error('网络错误，请检查网络连接')
+      return Promise.reject(new Error('网络错误'))
+    } else {
+      // 其他错误
+      const errorMsg = error.message || '未知错误'
+      Toast.error(errorMsg)
+      return Promise.reject(error)
+    }
   }
 )
 
