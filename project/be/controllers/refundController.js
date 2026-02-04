@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const RefundRequest = require('../models/refundRequest');
 const Order = require('../models/order');
 const User = require('../models/user');
+const WalletLog = require('../models/walletLog');
 const sequelize = require('../config/db');
 
 // 用户发起退款申请
@@ -157,6 +158,20 @@ exports.approveRefund = async (req, res) => {
         companion.balance = Number(companion.balance) - Number(refund.amount);
         await client.save({ transaction: t });
         await companion.save({ transaction: t });
+
+        // 写入资金流水（在同一个事务里）
+        await WalletLog.create({
+            user_id: client.id,
+            type: 'deposit',
+            amount: refund.amount,
+            related_id: order.id
+        }, { transaction: t });
+        await WalletLog.create({
+            user_id: companion.id,
+            type: 'payment',
+            amount: refund.amount,
+            related_id: order.id
+        }, { transaction: t });
 
         refund.status = 'approved';
         refund.processed_at = new Date();

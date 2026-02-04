@@ -56,6 +56,13 @@
       }
     },
     {
+      "path": "pages/wallet/flow",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#0F3460"
+      }
+    },
+    {
       "path": "pages/mescroll/mescroll",
       "style": {
         "navigationBarTitleText": "mescroll",

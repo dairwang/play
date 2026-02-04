@@ -19,6 +19,7 @@ const companionRoutes = require('./routes/companion');
 const orderRoutes = require('./routes/order');
 const refundRoutes = require('./routes/refund');
 const userRoutes = require('./routes/user');
+const walletRoutes = require('./routes/wallet');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
@@ -26,6 +27,7 @@ app.use('/api/companions', companionRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/refunds', refundRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/wallet', walletRoutes);
 
 app.get('/', (req, res) => {
   res.send({ message: 'Play Companion Server is Running' });

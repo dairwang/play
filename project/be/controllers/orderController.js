@@ -1,6 +1,7 @@
 const Order = require('../models/order');
 const User = require('../models/user');
 const Game = require('../models/game');
+const WalletLog = require('../models/walletLog');
 const { v4: uuidv4 } = require('uuid');
 const { Op } = require('sequelize');
 
@@ -123,6 +124,20 @@ exports.completeOrder = async (req, res) => {
             companion.balance = Number(companion.balance) + Number(order.amount);
             await client.save();
             await companion.save();
+
+            // 写入资金流水（核心功能：不做复杂业务校验/事务）
+            await WalletLog.create({
+                user_id: client.id,
+                type: 'payment',
+                amount: order.amount,
+                related_id: order.id
+            });
+            await WalletLog.create({
+                user_id: companion.id,
+                type: 'income',
+                amount: order.amount,
+                related_id: order.id
+            });
         }
 
         res.json({ code: 200, msg: '订单已完成' });

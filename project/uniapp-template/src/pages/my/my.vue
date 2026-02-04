@@ -104,6 +104,12 @@ function handleApplyCompanion() {
   })
 }
 
+function goWalletFlow() {
+  uni.navigateTo({
+    url: '/pages/wallet/flow',
+  })
+}
+
 function handleLogout() {
   uni.removeStorageSync('token')
   uni.removeStorageSync('user')
@@ -114,8 +120,8 @@ function handleLogout() {
 </script>
 
 <template>
-  <view class="page-container min-h-screen pb-20">
-    <view class="pt-14 px-6 pb-8 bg-gradient-to-b from-transparent to-transparent">
+  <view class="page-container min-h-screen">
+    <view class="pt-8 px-6 pb-4 bg-gradient-to-b from-transparent to-transparent">
       <view class="flex items-center">
         <view class="relative">
           <SmartImage
@@ -175,7 +181,7 @@ function handleLogout() {
       </view>
     </view>
 
-    <view class="px-4 mt-4 bg-[#291a52] px-8px py-16px rounded-10px">
+    <view class="px-4 bg-[#291a52] px-8px py-16px rounded-10px">
       <!-- Service Management Section -->
       <view
         v-if="user.is_companion"
@@ -295,13 +301,16 @@ function handleLogout() {
           </text>
         </view>
 
-        <view class="flex items-center justify-between p-4 border-b border-white/5 active:bg-white/5">
+        <view
+          class="flex items-center justify-between p-4 border-b border-white/5 active:bg-white/5 cursor-pointer"
+          @tap="goWalletFlow"
+        >
           <view class="flex items-center">
             <text class="mr-3">
               👛
             </text>
             <text class="text-white text-sm">
-              我的钱包
+              我的钱包 - 资金流水
             </text>
           </view>
           <text class="text-gray-500">
@@ -346,7 +355,7 @@ function handleLogout() {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.15), transparent),
     radial-gradient(2px 2px at 60% 70%, rgba(168, 85, 247, 0.2), transparent),
     radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.1), transparent),
