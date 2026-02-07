@@ -121,7 +121,7 @@ onMounted(() => {
             range-key="name"
             @change="onGameChange"
           >
-            <view class="w-full bg-[#0f3460] text-white rounded-lg px-4 py-3 flex items-center justify-between">
+            <view class=" bg-[#0f3460] text-white rounded-lg px-4 py-3 flex items-center justify-between">
               <text>
                 {{ selectedGameIndex !== null ? games[selectedGameIndex]?.name : '请选择擅长的游戏' }}
               </text>
@@ -136,13 +136,13 @@ onMounted(() => {
       <!-- Price Input -->
       <view class="mb-4">
         <view class="block text-gray-400 text-xs mb-2">
-          服务价格 (元/局)
+          服务价格 (元/小时)
         </view>
         <input
           v-model="form.price"
           type="number"
-          class="w-full bg-[#0f3460] text-white rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
-          placeholder="请输入每局价格"
+          class=" bg-[#0f3460] text-white rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+          placeholder="请输入每小时价格"
         >
       </view>
 
@@ -154,14 +154,14 @@ onMounted(() => {
         <textarea
           v-model="form.description"
           rows="4"
-          class="w-full bg-[#0f3460] text-white rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-primary placeholder-gray-500 resize-none"
+          class=" bg-[#0f3460] text-white rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-primary placeholder-gray-500 resize-none"
           placeholder="介绍一下你的技术特点、段位等优势..."
         />
       </view>
 
       <!-- Submit Button -->
       <button
-        class="w-full bg-primary text-white font-bold py-3 rounded-lg active:scale-95 transition-transform disabled:opacity-50 disabled:scale-100 flex items-center justify-center"
+        class=" bg-primary text-white font-bold py-3 rounded-lg active:scale-95 transition-transform disabled:opacity-50 disabled:scale-100 flex items-center justify-center"
         :disabled="submitting"
         @click="submit"
       >

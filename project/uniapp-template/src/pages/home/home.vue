@@ -6,11 +6,11 @@ import SearchBar from '@/components/SearchBar.vue'
 import SmartImage from '@/components/SmartImage.vue'
 import { DEFAULT_AVATAR, DEFAULT_BANNER, DEFAULT_GAME_ICON, GAME_ICON_MAP } from '@/common/images'
 
-const banners = ref<string[]>([
-  'https://gd-hbimg-edge.huaban.com/e1bb513150231b82200d939019c9aae298a5230138b170-y9zDhl_fw658webp?auth_key=1769774400-58157a2411ef47829d4b309967a3c9b5-0-d99016fdf36dadcb66248a34b225f223',
-  'https://gd-hbimg-edge.huaban.com/227636f00ffcf5a0b5202e3b86d8471f5931ccfac6fbd7-A6JneI_fw658webp?auth_key=1769774400-58157a2411ef47829d4b309967a3c9b5-0-46cdeeba653c7ac5369cb99a1a93894c',
-  'https://gd-hbimg-edge.huaban.com/fa713380e49b8d4564c48b5f6d1c48c0e82131e4bcc8bf-DSOBVR_fw658webp?auth_key=1769760000-716b8537ad70434882e1cf2209ab8d0e-0-6379e842d5116c435a2100742c8a6c55',
-])
+import banner1 from '@/assets/images/王者荣耀.webp'
+import banner2 from '@/assets/images/英雄联盟.webp'
+import banner3 from '@/assets/images/金铲铲.webp'
+
+const banners = ref<string[]>([banner1, banner2, banner3])
 
 const games = ref<any[]>([])
 const companions = ref<any[]>([])
@@ -99,9 +99,9 @@ function selectGame(game: any) {
           <view class="h-40px w-40px rounded-xl bg-gradient-to-tr from-primary to-pink-500 grid place-items-center animate-[pulse-glow_3s_ease_infinite]">
             🎮
           </view>
-          <!-- <view class="hero-title">
+          <view class="hero-title">
             电竞陪玩
-          </view> -->
+          </view>
         </view>
       </view>
       <view class="mt-4">
@@ -122,7 +122,8 @@ function selectGame(game: any) {
       >
         <swiper-item v-for="(item, idx) in banners" :key="idx">
           <view class="banner-item">
-            <SmartImage :src="item" :fallback="fallbacks.banner" cls="banner-img" />
+            <img :src="item" alt="" srcset="" style="object-fit: cover;" class="banner-img">
+            <!-- <SmartImage :src="item" :fallback="fallbacks.banner" cls="banner-img" /> -->
           </view>
         </swiper-item>
       </swiper>
@@ -257,7 +258,7 @@ function selectGame(game: any) {
           <view class="p-3">
             <view class="flex items-center justify-between mb-2">
               <text class="text-primary font-bold text-sm">
-                ¥{{ item.price }}/局
+                ¥{{ item.price }}/小时
               </text>
               <!-- <text class="text-gray-500 text-xs">
                 0.5km
@@ -293,7 +294,7 @@ function selectGame(game: any) {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.15), transparent),
     radial-gradient(2px 2px at 60% 70%, rgba(168, 85, 247, 0.2), transparent),
     radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.1), transparent),

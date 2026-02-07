@@ -59,12 +59,12 @@ async function handleRegister() {
 </script>
 
 <template>
-  <view class="page-container min-h-screen grid place-items-center px-6">
+  <view class="page-container min-h-screen flex flex-col  px-6">
     <HNavBar title="注册" :placeholder="true" />
 
-    <view class="glass w-full max-w-md p-8 rounded-3xl mt-16">
+    <view class="glass w-full max-w-80% p-8 rounded-3xl mt-16">
       <view class="text-center mb-8">
-        <view class="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-tr from-primary to-pink-500 grid place-items-center animate-[pulse-glow_3s_ease_infinite]">
+        <view class="register-icon-wrap">
           ➕
         </view>
         <view class="mt-4 hero-title">
@@ -130,7 +130,7 @@ async function handleRegister() {
           已有账号？
         </text>
         <text
-          class="text-primary ml-2 font-bold"
+          class="text-primary ml-2 font-bold cursor-pointer"
           @click="goLogin"
         >
           立即登录
@@ -140,34 +140,30 @@ async function handleRegister() {
   </view>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+/* 与 fe Register / Login 一致：from-secondary via-dark to-black */
 .page-container {
-  background: linear-gradient(180deg, #1C0F3C 0%, #221245 50%, #1a0d35 100%);
-  position: relative;
+  background: linear-gradient(180deg, #0f3460 0%, #1a1a2e 50%, #000 100%);
   min-height: 100vh;
 }
 
-.page-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.15), transparent),
-    radial-gradient(2px 2px at 60% 70%, rgba(168, 85, 247, 0.2), transparent),
-    radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.1), transparent),
-    radial-gradient(1px 1px at 80% 10%, rgba(168, 85, 247, 0.15), transparent),
-    radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.1), transparent);
-  background-size: 200% 200%;
-  background-position: 0% 0%, 100% 100%, 50% 50%, 0% 100%, 100% 0%;
-  pointer-events: none;
-  z-index: 0;
+/* 与 fe 一致：图标容器 + pulse-glow 动画 */
+.register-icon-wrap {
+  width: 4rem;
+  height: 4rem;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #e94560 0%, #ec4899 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  animation: pulse-glow 3s ease-in-out infinite;
 }
 
-.page-container > view {
-  position: relative;
-  z-index: 1;
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(233, 69, 96, 0); }
+  50% { box-shadow: 0 0 30px rgba(233, 69, 96, 0.35); }
 }
 </style>

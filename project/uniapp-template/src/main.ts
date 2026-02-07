@@ -1,4 +1,5 @@
 import 'virtual:uno.css'
+import '@/assets/tailwind.css'
 import { createSSRApp } from 'vue'
 import uviewPlus from 'uview-plus'
 import { createPinia } from 'pinia'

@@ -177,13 +177,13 @@ onMounted(() => {
         <view class="text-white font-bold mb-3">
           陪玩服务
         </view>
-        <view class="mb-3 text-xs text-gray-400">
+        <!-- <view class="mb-3 text-xs text-gray-400">
           当前仅支持修改第一项陪玩服务的价格，更多配置可在后台管理中完善。
-        </view>
+        </view> -->
 
         <view class="mb-1">
           <view class="text-xs text-gray-400 mb-1">
-            服务价格（元 / 局）
+            服务价格（元 / 小时）
           </view>
           <input
             v-model="form.price"

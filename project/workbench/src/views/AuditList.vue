@@ -95,7 +95,7 @@ onMounted(() => {
         
         <el-table-column label="价格" width="120">
           <template #default="scope">
-            <span class="text-primary font-bold">¥{{ scope.row.price }}</span> / 局
+            <span class="text-primary font-bold">¥{{ scope.row.price }}</span> / 小时
           </template>
         </el-table-column>
 

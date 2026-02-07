@@ -158,7 +158,7 @@ async function submitOrder() {
       陪玩详情
     </view>
     <view class="card overflow-hidden">
-      <SmartImage :src="detail.User?.avatar" :fallback="fallbacks.avatar" cls="w-full h-156px object-cover" />
+      <SmartImage :src="detail.User?.avatar" :fallback="fallbacks.avatar" cls="w-full h-300px object-cover" />
       <view class="p-4">
         <view class="flex items-center justify-between mb-2">
           <view class="text-white font-bold text-lg">
