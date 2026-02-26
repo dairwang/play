@@ -31,7 +31,7 @@ exports.getAllUsers = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { nickname, role, is_companion, balance, avatar, signature } = req.body;
+        const { nickname, role, is_companion, balance, avatar, signature, contact } = req.body;
 
         const user = await User.findByPk(id);
         if (!user) {
@@ -47,6 +47,7 @@ exports.updateUser = async (req, res) => {
         await user.update({
             nickname: nickname ?? user.nickname,
             signature: signature !== undefined ? signature : user.signature,
+            contact: contact !== undefined ? contact : user.contact,
             avatar: avatar !== undefined ? avatar : user.avatar,
             role: nextRole,
             is_companion: typeof is_companion === 'boolean' ? is_companion : user.is_companion,

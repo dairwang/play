@@ -10,6 +10,7 @@ const form = reactive({
   avatar: '',
   nickname: '',
   signature: '',
+  contact: '',
   price: '',
 })
 
@@ -36,6 +37,7 @@ async function fetchData() {
     form.avatar = user.avatar || ''
     form.nickname = user.nickname || ''
     form.signature = user.signature || ''
+    form.contact = user.contact || ''
     isCompanion.value = !!user.is_companion
 
     if (isCompanion.value) {
@@ -79,6 +81,7 @@ async function handleSave() {
         avatar: form.avatar,
         nickname: form.nickname,
         signature: form.signature,
+        contact: form.contact,
       },
     })
 
@@ -167,6 +170,17 @@ onMounted(() => {
             placeholder="写一句话介绍自己吧～"
           />
         </view>
+
+        <view class="mb-1">
+          <view class="text-xs text-gray-400 mb-1">
+            联系方式（微信 / QQ / 手机）
+          </view>
+          <input
+            v-model="form.contact"
+            class=" bg-[#0f3460] text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+            placeholder="请输入联系方式，方便玩家联系你"
+          >
+        </view>
       </view>
 
       <!-- 陪玩服务设置 -->
@@ -223,7 +237,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.15), transparent),
     radial-gradient(2px 2px at 60% 70%, rgba(168, 85, 247, 0.2), transparent),
     radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.1), transparent),
@@ -240,4 +254,3 @@ onMounted(() => {
   z-index: 1;
 }
 </style>
-

@@ -25,6 +25,11 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    // 联系方式（微信 / QQ / 手机等）
+    contact: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     avatar: {
         type: DataTypes.STRING,
         defaultValue: 'https://images.unsplash.com/photo-1542206395-9feb3edaa68f?q=80&w=400&auto=format&fit=crop'
