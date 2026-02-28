@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import SearchBar from '@/components/SearchBar.vue'
@@ -14,6 +14,17 @@ const banners = ref<string[]>([banner1, banner2, banner3])
 
 const games = ref<any[]>([])
 const companions = ref<any[]>([])
+
+const sortOptions = [
+  { key: 'hot', label: '热门' },
+  { key: 'price_desc', label: '价格高' },
+  { key: 'price_asc', label: '价格低' },
+  { key: 'rating_desc', label: '评分高' },
+  { key: 'rating_asc', label: '评分低' },
+] as const
+
+const activeSort = ref<(typeof sortOptions)[number]['key']>('hot')
+
 const loadingGames = ref(false)
 const loadingCompanions = ref(false)
 const errorGames = ref(false)
@@ -89,6 +100,27 @@ function selectGame(game: any) {
   selectedGameId.value = selectedGameId.value === game.id ? null : game.id
   fetchCompanions()
 }
+
+const sortedCompanions = computed(() => {
+  const list = companions.value.slice()
+  switch (activeSort.value) {
+    case 'price_desc':
+      return list.sort((a, b) => Number(b.price || 0) - Number(a.price || 0))
+    case 'price_asc':
+      return list.sort((a, b) => Number(a.price || 0) - Number(b.price || 0))
+    case 'rating_desc': {
+      const getRating = (x: any) => Number(x.average_rating ?? x.rating ?? 0)
+      return list.sort((a, b) => getRating(b) - getRating(a))
+    }
+    case 'rating_asc': {
+      const getRating = (x: any) => Number(x.average_rating ?? x.rating ?? 0)
+      return list.sort((a, b) => getRating(a) - getRating(b))
+    }
+    case 'hot':
+    default:
+      return list
+  }
+})
 </script>
 
 <template>
@@ -100,7 +132,7 @@ function selectGame(game: any) {
             🎮
           </view>
           <view class="hero-title">
-            电竞陪玩
+            <!-- 电竞陪玩 -->
           </view>
         </view>
       </view>
@@ -196,10 +228,21 @@ function selectGame(game: any) {
     </view>
 
     <view class="mt-8 px-4">
-      <view class="mb-4">
+      <view class="mb-4 flex items-center justify-between">
         <text class="section-title text-primary">
           推荐陪玩
         </text>
+        <view class="flex gap-3 text-xs">
+          <text
+            v-for="opt in sortOptions"
+            :key="opt.key"
+            class="cursor-pointer"
+            :class="activeSort === opt.key ? 'text-primary font-bold' : 'text-gray-400'"
+            @click="activeSort = opt.key"
+          >
+            {{ opt.label }}
+          </text>
+        </view>
       </view>
 
       <view v-if="loadingCompanions" class="grid grid-cols-2 gap-4 px-0 animate-pulse">
@@ -237,7 +280,7 @@ function selectGame(game: any) {
 
       <view v-else class="grid grid-cols-2 gap-4">
         <view
-          v-for="(item, index) in companions"
+          v-for="(item, index) in sortedCompanions"
           :key="index"
           class="card overflow-hidden transition-all hover:translate-y-[-2px] hover:shadow-2xl"
           @click="goDetail(item)"
@@ -256,13 +299,26 @@ function selectGame(game: any) {
             </view>
           </view>
           <view class="p-3">
-            <view class="flex items-center justify-between mb-2">
+            <view class="flex items-center justify-between mb-1">
               <text class="text-primary font-bold text-sm">
                 ¥{{ item.price }}/小时
               </text>
-              <!-- <text class="text-gray-500 text-xs">
-                0.5km
-              </text> -->
+            </view>
+            <!-- 评分：与详情页风格保持一致的精简版 -->
+            <view
+              v-if="item.evaluation_count > 0"
+              class="flex items-center gap-1 mb-2"
+            >
+              <u-rate
+                :model-value="item.average_rating"
+                :count="5"
+                size="12"
+                readonly
+                active-color="#FF2D55"
+              />
+              <text class="text-gray-400 text-10px">
+                {{ item.average_rating }} 分 · {{ item.evaluation_count }} 评
+              </text>
             </view>
             <view class="flex flex-wrap gap-1 items-center">
               <text class="chip text-white">

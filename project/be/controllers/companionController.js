@@ -2,7 +2,7 @@ const CompanionService = require('../models/companionService');
 const User = require('../models/user');
 const Game = require('../models/game');
 const Order = require('../models/order');
-const { Op } = require('sequelize');
+const { Op, fn, col } = require('sequelize');
 
 // Get list (Public - with filters)
 exports.getServices = async (req, res) => {
@@ -30,7 +30,43 @@ exports.getServices = async (req, res) => {
             order: [['created_at', 'DESC']]
         });
 
-        res.json({ code: 200, data: services });
+        // 计算每个陪玩用户的评价统计（平均评分 / 评价数），与详情页逻辑保持一致
+        const userIds = [...new Set(services.map(s => s.user_id).filter(Boolean))];
+        let statsMap = {};
+        if (userIds.length > 0) {
+            const stats = await Order.findAll({
+                where: {
+                    companion_id: { [Op.in]: userIds },
+                    rating: { [Op.ne]: null }
+                },
+                attributes: [
+                    'companion_id',
+                    [fn('COUNT', col('id')), 'evaluation_count'],
+                    [fn('AVG', col('rating')), 'average_rating']
+                ],
+                group: ['companion_id']
+            });
+
+            statsMap = stats.reduce((map, row) => {
+                const json = row.toJSON();
+                const avg = Number(json.average_rating || 0);
+                map[json.companion_id] = {
+                    evaluation_count: Number(json.evaluation_count || 0),
+                    average_rating: Number(avg.toFixed(1))
+                };
+                return map;
+            }, {});
+        }
+
+        const data = services.map(service => {
+            const json = service.toJSON();
+            const stat = statsMap[json.user_id] || { evaluation_count: 0, average_rating: 0 };
+            json.evaluation_count = stat.evaluation_count;
+            json.average_rating = stat.average_rating;
+            return json;
+        });
+
+        res.json({ code: 200, data });
     } catch (error) {
         console.error(error);
         res.status(500).json({ code: 500, msg: '服务器错误' });
