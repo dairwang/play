@@ -27,11 +27,11 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// 更新用户信息（头像 / 昵称 / 签名 / 角色 / 是否陪玩 / 余额）
+// 更新用户信息（头像 / 昵称 / 签名 / 角色 / 是否陪玩 / 余额 / 状态）
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { nickname, role, is_companion, balance, avatar, signature, contact } = req.body;
+        const { nickname, role, is_companion, balance, avatar, signature, contact, status } = req.body;
 
         const user = await User.findByPk(id);
         if (!user) {
@@ -51,6 +51,7 @@ exports.updateUser = async (req, res) => {
             avatar: avatar !== undefined ? avatar : user.avatar,
             role: nextRole,
             is_companion: typeof is_companion === 'boolean' ? is_companion : user.is_companion,
+            status: typeof status === 'boolean' ? status : user.status,
             balance: balance !== undefined ? balance : user.balance,
         });
 
@@ -64,18 +65,22 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-// 删除用户
-exports.deleteUser = async (req, res) => {
+// 启用 / 禁用用户
+exports.toggleStatus = async (req, res) => {
     try {
         const { id } = req.params;
-
         const user = await User.findByPk(id);
         if (!user) {
             return res.status(404).json({ code: 404, msg: '用户不存在' });
         }
 
-        await user.destroy();
-        res.json({ code: 200, msg: '用户删除成功' });
+        user.status = !user.status;
+        await user.save();
+
+        const safeUser = user.toJSON();
+        delete safeUser.password;
+
+        res.json({ code: 200, msg: '状态已更新', data: safeUser });
     } catch (error) {
         console.error(error);
         res.status(500).json({ code: 500, msg: '服务器错误' });

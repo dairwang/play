@@ -2,6 +2,7 @@ const Order = require('../models/order');
 const User = require('../models/user');
 const Game = require('../models/game');
 const WalletLog = require('../models/walletLog');
+const RefundRequest = require('../models/refundRequest');
 const { v4: uuidv4 } = require('uuid');
 const { Op } = require('sequelize');
 
@@ -51,18 +52,48 @@ exports.getMyOrders = async (req, res) => {
         const { role } = req.query; // 'client' or 'companion'
 
         const where = role === 'companion' ? { companion_id: user_id } : { user_id };
+        const { type } = req.query; // 订单分类：all / pending / ongoing / to_evaluate / refund
 
         const orders = await Order.findAll({
             where,
             include: [
                 { model: User, as: 'Client', attributes: ['nickname', 'avatar'] },
                 { model: User, as: 'Companion', attributes: ['nickname', 'avatar'] },
-                { model: Game, attributes: ['name', 'icon'] }
+                { model: Game, attributes: ['name', 'icon'] },
+                // 退款信息，用于“退款/售后”分类
+                { model: RefundRequest, as: 'Refunds', attributes: ['status'] },
             ],
             order: [['created_at', 'DESC']]
         });
 
-        res.json({ code: 200, data: orders });
+        // 在内存中按 type 进行分类（保证兼容旧数据）
+        const filtered = orders
+            .map(o => o.toJSON())
+            .filter(order => {
+                if (!type || type === 'all') return true;
+                switch (type) {
+                    case 'pending':
+                        return order.status === 'pending';
+                    case 'ongoing':
+                        return order.status === 'accepted';
+                    case 'to_evaluate':
+                        return order.status === 'completed' && (order.rating == null);
+                    case 'refund': {
+                        const refunds = Array.isArray(order.Refunds) ? order.Refunds : [];
+                        // 存在退款申请，且状态不是 rejected
+                        return refunds.some(r => r.status !== 'rejected');
+                    }
+                    default:
+                        return true;
+                }
+            })
+            .map(order => {
+                // 前端用不到 Refunds 详情，去掉减少冗余
+                delete order.Refunds;
+                return order;
+            });
+
+        res.json({ code: 200, data: filtered });
     } catch (error) {
         console.error(error);
         res.status(500).json({ code: 500, msg: '服务器错误' });

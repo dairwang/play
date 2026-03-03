@@ -35,6 +35,8 @@ type TabValue = (typeof tabs)[number]['value']
 
 const currentTab = ref<TabValue>('client')
 const list = ref<OrderItem[]>([])
+// 订单分类：all / pending / ongoing / to_evaluate / refund
+const filterType = ref<'all' | 'pending' | 'ongoing' | 'to_evaluate' | 'refund'>('all')
 const loading = ref(false)
 const showEvaluateModal = ref(false)
 const evaluateOrderItem = ref<OrderItem | null>(null)
@@ -78,7 +80,7 @@ async function fetchList() {
   loading.value = true
   try {
     const res: any = await request({
-      url: `/orders/my?role=${currentTab.value}`,
+      url: `/orders/my?role=${currentTab.value}&type=${filterType.value}`,
     })
     list.value = res.data || []
   }
@@ -95,9 +97,15 @@ watch(currentTab, () => {
 })
 
 onLoad((options) => {
-  const type = options?.type
-  if (type === 'companion')
+  const type = options?.type as string | undefined
+  // 兼容老入口：type=companion 仅切换到“我接的单”
+  if (type === 'companion') {
     currentTab.value = 'companion'
+    filterType.value = 'all'
+  }
+  else if (type === 'pending' || type === 'ongoing' || type === 'to_evaluate' || type === 'refund' || type === 'all') {
+    filterType.value = type
+  }
 
   fetchList()
 })

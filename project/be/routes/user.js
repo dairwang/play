@@ -9,7 +9,7 @@ router.use(authMiddleware);
 router.get('/stats', userController.getDashboardStats);
 router.get('/all', userController.getAllUsers);
 router.put('/update/:id', userController.updateUser);
-router.delete('/delete/:id', userController.deleteUser);
+router.post('/:id/toggle-status', userController.toggleStatus);
 
 // 关注相关：关注/取消关注/是否已关注（合并到用户路由）
 router.get('/:id/follow/check', followController.check);

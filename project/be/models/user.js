@@ -42,6 +42,11 @@ const User = sequelize.define('User', {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
+    // 账号状态：true 启用，false 禁用
+    status: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
     balance: {
         type: DataTypes.DECIMAL(10, 2),
         defaultValue: 0.00

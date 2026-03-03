@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
-import { Delete, Edit, Search } from '@element-plus/icons-vue'
+import { Edit, Search } from '@element-plus/icons-vue'
 import request from '../utils/request'
 import { Toast, Confirm } from '../utils/popup.js'
 
@@ -19,6 +19,7 @@ const formData = reactive({
   role: 'user',
   is_companion: false,
   balance: 0,
+  status: true,
 })
 
 const rules = {
@@ -54,6 +55,7 @@ const handleEdit = (row) => {
   formData.role = row.role || 'user'
   formData.is_companion = !!row.is_companion
   formData.balance = Number(row.balance || 0)
+  formData.status = row.status !== false
   dialogVisible.value = true
 }
 
@@ -70,6 +72,7 @@ const handleSubmit = async () => {
         role: formData.role,
         is_companion: formData.is_companion,
         balance: formData.balance,
+        status: formData.status,
       })
       Toast.success('用户信息已更新')
       dialogVisible.value = false
@@ -81,15 +84,16 @@ const handleSubmit = async () => {
   })
 }
 
-const handleDelete = async (row) => {
+const handleToggleStatus = async (row) => {
+  const actionText = row.status === false ? '启用' : '禁用'
   try {
-    await Confirm(`确定要删除用户「${row.username}」吗？`, '警告')
-    await request.delete(`/users/delete/${row.id}`)
-    Toast.success('用户已删除')
+    await Confirm(`确定要${actionText}用户「${row.username}」吗？`, '提示')
+    await request.post(`/users/${row.id}/toggle-status`)
+    Toast.success(`用户已${actionText}`)
     fetchList()
   }
   catch (error) {
-    // 取消时 error 为 false，可忽略
+    // 取消或错误统一忽略，这里只在成功时刷新
   }
 }
 
@@ -146,6 +150,14 @@ onMounted(() => {
           </template>
         </el-table-column>
 
+        <el-table-column label="状态" width="100">
+          <template #default="scope">
+            <el-tag :type="scope.row.status === false ? 'info' : 'success'">
+              {{ scope.row.status === false ? '已禁用' : '启用中' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
         <el-table-column label="注册时间">
           <template #default="scope">
             {{ formatDate(scope.row.created_at) }}
@@ -167,11 +179,10 @@ onMounted(() => {
             </el-button>
             <el-button
               link
-              type="danger"
-              :icon="Delete"
-              @click="handleDelete(scope.row)"
+              type="warning"
+              @click="handleToggleStatus(scope.row)"
             >
-              删除
+              {{ scope.row.status === false ? '启用' : '禁用' }}
             </el-button>
           </template>
         </el-table-column>

@@ -175,7 +175,7 @@ onMounted(() => {
               </el-button>
             </div>
             <span v-else class="text-gray-400 text-xs">
-              已{{ getStatusLabel(scope.row.status) }}
+              {{ getStatusLabel(scope.row.status) }}
             </span>
           </template>
         </el-table-column>
