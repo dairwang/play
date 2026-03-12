@@ -132,7 +132,7 @@ const sortedCompanions = computed(() => {
             🎮
           </view>
           <view class="hero-title">
-            <!-- 电竞陪玩 -->
+            电竞陪玩
           </view>
         </view>
       </view>
