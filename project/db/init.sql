@@ -8,9 +8,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` VARCHAR(50) NOT NULL UNIQUE COMMENT '登录账号',
   `password` VARCHAR(255) NOT NULL COMMENT '加密密码',
   `nickname` VARCHAR(50) NOT NULL COMMENT '昵称',
+  `signature` VARCHAR(255) DEFAULT NULL COMMENT '个性签名 / 个人简介',
+  `contact` VARCHAR(255) DEFAULT NULL COMMENT '联系方式（微信 / QQ / 手机等）',
   `avatar` VARCHAR(255) DEFAULT 'https://placehold.co/200x200/png?text=Avatar' COMMENT '头像',
   `role` VARCHAR(20) DEFAULT 'user' COMMENT '角色: user, admin',
   `is_companion` TINYINT(1) DEFAULT 0 COMMENT '是否陪玩: 0否 1是',
+  `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '账号状态: 1启用 0禁用',
   `balance` DECIMAL(10,2) DEFAULT 0.00 COMMENT '钱包余额',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -47,9 +50,13 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `game_id` INT NOT NULL,
   `amount` DECIMAL(10,2) NOT NULL COMMENT '订单总金额',
   `duration_hours` DECIMAL(5,2) NOT NULL DEFAULT 1 COMMENT '陪玩时长（小时）',
+  `remark` TEXT NULL COMMENT '订单备注',
   `status` VARCHAR(20) DEFAULT 'pending' COMMENT 'pending, accepted, completed, cancelled',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `completed_at` TIMESTAMP NULL,
+  `rating` INT NULL COMMENT '1-5 星评分',
+  `review` TEXT NULL COMMENT '评价内容',
+  `evaluated_at` TIMESTAMP NULL COMMENT '评价时间',
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
   FOREIGN KEY (`companion_id`) REFERENCES `users`(`id`),
   FOREIGN KEY (`game_id`) REFERENCES `games`(`id`)
@@ -58,10 +65,10 @@ CREATE TABLE IF NOT EXISTS `orders` (
 -- 5. Wallet Logs
 CREATE TABLE IF NOT EXISTS `wallet_logs` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `user_id` INT NOT NULL,
-  `type` VARCHAR(20) NOT NULL COMMENT 'deposit, payment, income, withdraw',
-  `amount` DECIMAL(10,2) NOT NULL,
-  `related_id` INT DEFAULT NULL COMMENT 'order_id etc',
+  `user_id` INT NOT NULL COMMENT '用户ID',
+  `type` VARCHAR(20) NOT NULL COMMENT 'deposit(退款入账), payment(支付/退款支出), income(接单收入), withdraw(提现)',
+  `amount` DECIMAL(10,2) NOT NULL COMMENT '金额',
+  `related_id` INT DEFAULT NULL COMMENT '订单ID',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -78,6 +85,17 @@ CREATE TABLE IF NOT EXISTS `refund_requests` (
   `processed_at` TIMESTAMP NULL,
   FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`),
   FOREIGN KEY (`applicant_id`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 7. User Follows
+CREATE TABLE IF NOT EXISTS `user_follows` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `follower_id` INT NOT NULL COMMENT '关注者用户ID',
+  `following_id` INT NOT NULL COMMENT '被关注用户ID',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `uniq_follower_following` (`follower_id`, `following_id`),
+  FOREIGN KEY (`follower_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`following_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Initial Data
